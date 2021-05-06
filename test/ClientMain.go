@@ -1,8 +1,10 @@
 package main
 
-import mpWoker "github.com/Noahnut/mapReduce/mpWorker"
+import "github.com/Noahnut/mapReduce/mpClient"
 
 func main() {
-	worker := mpWoker.MpWorker{}
-	worker.CreateMpWorker("localhost", "127.0.0.2", "5553")
+	client := mpClient.MpClient{}
+	dataPath := make([]string, 0)
+	dataPath = append(dataPath, "testOne")
+	client.StartMapReduce("5553", dataPath, "./mapReduceApp/wordCount.so")
 }
