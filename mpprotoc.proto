@@ -8,8 +8,25 @@ option go_package = "./mpProtoc";
 service MapReduceService {
   rpc keepAlive (WorkerState) returns (MasterRequest){};
   rpc NeedWorkInfo(WorkerNeed) returns (NeedProcessData);
-  rpc getMapWorkData(WorkerInfo) returns (stream MapData);
+  rpc GetMapWorkData(WorkerInfo) returns (stream MapData);
+  rpc RecvMapReduceInfoToMaster(MapReduceInfo) returns (Result);
+  rpc DownloadMapReduceApp(WorkerInfo) returns (stream Chunk);
 }
+
+message Chunk {
+  bytes contents = 1;
+}
+
+
+message MapReduceInfo {
+  repeated string dataPath = 1;
+  string mapReduceAppPath = 2;
+}
+
+message Result {
+  string result = 1;
+}
+
 
 message WorkerInfo {
   string IPAddress = 1;
@@ -33,9 +50,9 @@ message WorkerNeed {
 message WorkerState {
   int32 workerState = 1;
   string IPAddress = 2;
-  string localDataPosition = 3;
 }
 
 message MasterRequest {
   int32 workerTask = 1;
+  int32 reduceTaskNumber = 2;
 }

@@ -2,10 +2,25 @@ package mpMaster
 
 import (
 	"io/ioutil"
-	"os"
+	"math/rand"
+	"strconv"
 	"testing"
+	"time"
 )
 
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
+var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\n")
+
+func RandStringRunes(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
+	}
+	return string(b)
+}
 func Test_readDataFromPath(t *testing.T) {
 	testCase := []struct {
 		fileName          string
@@ -19,19 +34,15 @@ func Test_readDataFromPath(t *testing.T) {
 	}
 
 	for _, e := range testCase {
-		mpMaster := _masterServer{}
-		TestByte := make([]byte, e.fileSize)
-		ioutil.WriteFile(e.fileName, TestByte, 0664)
-		mpMaster.dataPath = append(mpMaster.dataPath, e.fileName)
-		mpMaster.readDataFromPath()
-		if mpMaster.splitDataNumber != e.expectSplitNumber {
-			t.Errorf("The splitDataNumber %d not equal expect %d", mpMaster.splitDataNumber, e.expectSplitNumber)
+		var stringArray string
+		for i := 0; i < e.fileSize; i++ {
+			value := strconv.Itoa(i)
+			stringArray += value
+			stringArray += " "
+			if i%20 == 0 {
+				stringArray += "\n"
+			}
 		}
-
-		if mpMaster.splitSize != e.expectDataSize {
-			t.Errorf("The splitDataSize %d not equal expect %d", mpMaster.splitSize, e.expectDataSize)
-
-		}
-		os.Remove(e.fileName)
+		ioutil.WriteFile(e.fileName, []byte(stringArray), 0664)
 	}
 }

@@ -1,4 +1,4 @@
 vendor/*
-test/MasterMain
-test/ClientMain
+test/*
+!test/*.go
 /mpProtoc/*
